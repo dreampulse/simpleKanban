@@ -1,0 +1,21 @@
+{
+  "name": "simpleKanban",
+  "version": "0.0.0",
+  "authors": [
+    "Jonathan Häberle <jonathan.haeberle@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-sortable": "~0.12.11",
+    "angular": "~1.2.25",
+    "bootstrap": "~3.2.0"
+  }
+}

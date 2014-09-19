@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+
+  <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans'
+        rel='stylesheet'
+        type='text/css'>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        input {
+            margin: 0.5em;
+        }
+
+        .beingDragged {
+            height: 24px;
+            border: 2px dotted #261b0c;
+        }
+    </style>
+
+  <script src="components/jquery/dist/jquery.js"></script>
+  <script src="components/jquery-ui/jquery-ui.js"></script>
+  <script src="components/angular/angular.js"></script>
+  <script src="components/angular-ui-sortable/sortable.js"></script>
+
+  <script src="index.js"></script>
+
+</head>
+<body ng-app="app" ng-controller="AppCtrl as appCtrl">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-3" ng-repeat="list in appCtrl.lists track by $index">
+                <h4>{{list.name}}</h4>
+
+                <ul ui-sortable='{connectWith: ".list", placeholder: "beingDragged"}' ng-model="list.items" class="list">
+                    <li ng-repeat="item in list.items track by $index">
+                        <input type="text" ng-model="item.content">
+                    </li>
+                </ul>
+
+                <button class="btn btn-default" ng-click="list.add()">add</button>
+            </div>
+
+        </div>
+
+        <hr/>
+
+        <pre>{{appCtrl.lists | json}}</pre>
+
+    </div>
+
+
+</body>
+</html>
