@@ -16,6 +16,7 @@
   "dependencies": {
     "angular-ui-sortable": "~0.12.11",
     "angular": "~1.2.25",
-    "bootstrap": "~3.2.0"
+    "bootstrap": "~3.2.0",
+    "ngstorage": "~0.3.0"
   }
 }
