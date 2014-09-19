@@ -23,12 +23,16 @@ var AppCtrl = (function () {
                 ] }
         ];
 
-        this.lists = $localStorage.$default({
+        this.columns = $localStorage.$default({
             store: init
         }).store;
     }
     AppCtrl.prototype.add = function (idx) {
-        this.lists[idx].items.push({ content: '' });
+        this.columns[idx].items.push({ content: '' });
+    };
+
+    AppCtrl.prototype.remove = function (idxColumn, idxItem) {
+        this.columns[idxColumn].items.splice(idxItem, 1);
     };
     return AppCtrl;
 })();

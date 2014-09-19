@@ -4,7 +4,7 @@ angular.module('app', ['ui.sortable', 'ngStorage']).run(function () {
 });
 
 class AppCtrl {
-    public lists:{
+    public columns:{
         name : string;
         items : {
             content : string
@@ -29,13 +29,17 @@ class AppCtrl {
                 ]}
         ];
 
-        this.lists = $localStorage.$default({
+        this.columns = $localStorage.$default({
             store: init
         }).store;
     }
 
     public add(idx) {
-        this.lists[idx].items.push({content : ''});
+        this.columns[idx].items.push({content : ''});
+    }
+
+    public remove(idxColumn, idxItem) {
+        this.columns[idxColumn].items.splice(idxItem, 1);
     }
 }
 angular.module('app').controller('AppCtrl', AppCtrl);

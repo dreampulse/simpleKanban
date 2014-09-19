@@ -21,19 +21,59 @@
         }
 
         li {
-            display: flex;
+            position: relative;
+            display: bl;
             margin-bottom: 1em;
+            padding: 1em;
+
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: rgba(50, 50, 50, 0.0901961) 0px 1px;
         }
 
-        input {
+        textarea {
             display: inline;
+            background-color: #ffffff;
+            border: 0;
+            width: 100%;
+            resize: none;
+            padding-right: 20px;
+            outline: none;
         }
 
-        .beingDragged {
-            height: 24px;
-            border: solid 2px #d3d3d3;
-            border-radius: 6px;
+        .placeholder {
+            height: 100px;
+            border: solid 1px #ccc;
+            border-radius: 5px;
+            background:#ccc;
+            box-shadow: inset rgba(102, 102, 102, 0.50) 0px 1px;
         }
+
+        .column {
+            background: #f6f6f6;
+            padding: 25px 25px;
+            margin: 2em;
+            border: 1px solid #e9e9e9;
+            border-radius: 5px;
+        }
+
+        .ui-sortable-helper {
+            transform: rotate(1deg) scale(1.08);
+        }
+
+        .btn {
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: rgba(50, 50, 50, 0.0901961) 0px 1px;
+            padding: 4px 10px 4px 6px;
+        }
+
+        .remove {
+            right: 10px;
+            top: 10px;
+            position: absolute;
+        }
+
     </style>
 
     <script src="components/jquery/dist/jquery.js"></script>
@@ -50,26 +90,23 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-3" ng-repeat="list in appCtrl.lists track by $index">
-            <h4>{{list.name}}</h4>
+        <div class="col-md-3 column" ng-repeat="column in appCtrl.columns track by $index">
+            <h3>{{column.name}}</h3>
 
-            <ul ui-sortable='{connectWith: ".list", placeholder: "beingDragged"}' ng-model="list.items" class="list">
-                <li ng-repeat="item in list.items track by $index">
-                    <span>
-                        <span class="glyphicon glyphicon-resize-vertical"></span>
-                        <input type="text" ng-model="item.content"/>
-                    </span>
+            <ul ui-sortable='{connectWith: ".list", placeholder: "placeholder"}' ng-model="column.items" class="list">
+                <li ng-repeat="item in column.items track by $index">
+                        <textarea ng-model="item.content" rows="3"></textarea>
+                        <span class="glyphicon glyphicon-remove remove" ng-click="appCtrl.remove($parent.$index, $index)"></span>
                 </li>
             </ul>
 
             <button class="btn btn-default" ng-click="appCtrl.add($index)">add</button>
         </div>
-
     </div>
 
     <hr/>
 
-    <pre>{{appCtrl.lists | json}}</pre>
+    <pre>{{appCtrl.columns | json}}</pre>
 
 </div>
 
