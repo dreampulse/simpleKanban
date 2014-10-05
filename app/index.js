@@ -1,61 +1,41 @@
 /// <reference path='../typings/tsd.d.ts'/>
-angular.module('app', ['ui.sortable', 'ngStorage']).run(function () {
-});
+angular.module('app', ['ui.sortable', 'ngStorage']);
 
-var Item = (function () {
-    function Item(item) {
-        if (item) {
-            this.content = item.content;
-        }
+
+
+var ColumnCtrl = (function () {
+    function ColumnCtrl($scope) {
+        var _this = this;
+        this.column = $scope.column;
+
+        $scope.$watch(function () {
+            return _this.column;
+        }, function () {
+            _this.assureOneEmptyItem();
+        }, true);
     }
-    return Item;
-})();
-
-var Column = (function () {
-    function Column(column) {
-        if (column) {
-            this.name = column.name;
-            this.items = column.items.map(function (item) {
-                return new Item(item);
-            });
-        }
-    }
-    Column.prototype.add = function () {
-        this.items.push({ content: '' });
-    };
-
-    Column.prototype.remove = function (idx) {
-        this.items.splice(idx, 1);
-    };
-
-    Column.prototype.assureOneEmptyItem = function () {
-        var last = this.items[this.items.length - 1];
+    ColumnCtrl.prototype.assureOneEmptyItem = function () {
+        var last = this.column.items[this.column.items.length - 1];
         if (last.content === undefined || last.content !== "") {
             this.add();
         }
     };
-    return Column;
-})();
 
-var Model = (function () {
-    function Model(model) {
-        if (model) {
-            this.columns = model.columns.map(function (column) {
-                return new Column(column);
-            });
-        }
-    }
-    Model.prototype.assureOneEmptyItem = function () {
-        this.columns.forEach(function (colum) {
-            return colum.assureOneEmptyItem();
-        });
+    ColumnCtrl.prototype.add = function () {
+        this.column.items.push({ content: '' });
     };
-    return Model;
-})();
 
+    ColumnCtrl.prototype.remove = function (idx) {
+        this.column.items.splice(idx, 1);
+    };
+    return ColumnCtrl;
+})();
+angular.module('app').controller('ColumnCtrl', ColumnCtrl);
+
+///////////////////
+// App Controller
 var AppCtrl = (function () {
     function AppCtrl($scope, $localStorage) {
-        var _this = this;
         var init = { columns: [
                 {
                     name: 'open',
@@ -75,17 +55,7 @@ var AppCtrl = (function () {
                     ] }
             ] };
 
-        var storage = $localStorage.$default({ model: init });
-
-        this.vm = new Model(storage.model);
-
-        $scope.$watch(function () {
-            return _this.vm;
-        }, function (vm) {
-            vm.assureOneEmptyItem();
-
-            storage.model = vm; // store change in database
-        }, true);
+        this.vm = $localStorage.$default(init);
     }
     return AppCtrl;
 })();

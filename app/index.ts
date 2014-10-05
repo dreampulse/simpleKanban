@@ -1,70 +1,70 @@
 /// <reference path='../typings/tsd.d.ts'/>
 
-angular.module('app', ['ui.sortable', 'ngStorage']).run(function () {
-});
+angular.module('app', ['ui.sortable', 'ngStorage']);
 
-class Item {
+//////////
+// Model
+
+interface Item {
     content:string;
-
-    constructor(item?:Item) {
-        if (item) {
-            this.content = item.content;
-        }
-    }
 }
 
-class Column {
+interface Column {
     name:string;
     items:Item[];
+}
 
-    constructor(column?:Column) {
-        if (column) {
-            this.name = column.name;
-            this.items = column.items.map(item => {
-                return new Item(item);
-            })
-        }
-    }
+interface Model {
+    columns:Column[];
+}
 
-    public add() {
-        this.items.push({content: ''});
-    }
 
-    public remove(idx:number) {
-        this.items.splice(idx, 1);
+//////////////////////
+// Column Controller
+
+interface ColumnCtrlScope extends ng.IScope {
+    column : Column;
+}
+
+class ColumnCtrl {
+    public column : Column;
+
+    constructor($scope:ColumnCtrlScope) {
+        this.column = $scope.column;
+
+        $scope.$watch(() => { return this.column}, () => {
+            this.assureOneEmptyItem();
+        }, true);
     }
 
     public assureOneEmptyItem() {
-        var last = this.items[this.items.length-1];
+        var last = this.column.items[this.column.items.length-1];
         if (last.content === undefined || last.content !== "") {
             this.add();
         }
     }
-}
 
-class Model {
-    columns:Column[];
-
-    constructor(model?:Model) {
-        if (model) {
-            this.columns = model.columns.map(column => {
-                return new Column(column);
-            })
-        }
+    public add() {
+        this.column.items.push({content: ''});
     }
 
-    public assureOneEmptyItem() {
-        this.columns.forEach(colum => colum.assureOneEmptyItem());
+    public remove(idx:number) {
+        this.column.items.splice(idx, 1);
     }
-
 }
+angular.module('app').controller('ColumnCtrl', ColumnCtrl);
+
+
+
+///////////////////
+// App Controller
 
 class AppCtrl {
     public vm:Model;
 
     constructor($scope:ng.IScope, $localStorage:any) {
 
-        var init = {
+        var init : Model = {
             columns: [
                 { name: 'open',
                     items: [
@@ -81,16 +81,7 @@ class AppCtrl {
                     ]}
             ]};
 
-        var storage = $localStorage.$default({ model: init });
-
-        this.vm = new Model(storage.model);
-
-        $scope.$watch(() => {return this.vm}, (vm) => {
-
-            vm.assureOneEmptyItem();
-
-            storage.model = vm;  // store change in database
-        }, true);
+        this.vm = $localStorage.$default(init);
     }
 
 }
